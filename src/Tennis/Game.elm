@@ -1,6 +1,16 @@
-module Game exposing (Game(..), initial, update)
+module Tennis.Game exposing (Game(..), Score(..), Status(..), initial, update)
 
 import Player exposing (Player(..))
+
+
+type Status
+    = Playing Game
+    | Won Player
+
+
+type Game
+    = Scores ( Score, Score )
+    | Advantage Player
 
 
 type Score
@@ -10,49 +20,43 @@ type Score
     | Forty
 
 
-type Game
-    = Scores ( Score, Score )
-    | Advantage Player
-    | Won Player
-
-
 initial : Game
 initial =
     Scores ( Zero, Zero )
 
 
-update : Game -> Player -> Game
+update : Game -> Player -> Status
 update game player =
     case ( game, player ) of
         ( Scores ( Zero, any ), A ) ->
-            Scores ( Fifteen, any )
+            Playing (Scores ( Fifteen, any ))
 
         ( Scores ( Fifteen, any ), A ) ->
-            Scores ( Thirty, any )
+            Playing (Scores ( Thirty, any ))
 
         ( Scores ( Thirty, any ), A ) ->
-            Scores ( Forty, any )
+            Playing (Scores ( Forty, any ))
 
         ( Scores ( any, Zero ), B ) ->
-            Scores ( any, Fifteen )
+            Playing (Scores ( any, Fifteen ))
 
         ( Scores ( any, Fifteen ), B ) ->
-            Scores ( any, Thirty )
+            Playing (Scores ( any, Thirty ))
 
         ( Scores ( any, Thirty ), B ) ->
-            Scores ( any, Forty )
+            Playing (Scores ( any, Forty ))
 
         ( Advantage B, A ) ->
-            Scores ( Forty, Forty )
+            Playing (Scores ( Forty, Forty ))
 
         ( Advantage A, B ) ->
-            Scores ( Forty, Forty )
+            Playing (Scores ( Forty, Forty ))
 
         ( Scores ( Forty, Forty ), A ) ->
-            Advantage A
+            Playing (Advantage A)
 
         ( Scores ( Forty, Forty ), B ) ->
-            Advantage A
+            Playing (Advantage B)
 
         ( Scores ( Forty, _ ), A ) ->
             Won A
@@ -64,7 +68,4 @@ update game player =
             Won B
 
         ( Advantage B, B ) ->
-            Won A
-
-        ( Won p, _ ) ->
-            Won p
+            Won B

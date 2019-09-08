@@ -2,25 +2,21 @@ module Example exposing (suite)
 
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
-import Score exposing (Game(..), Player(..), Score(..), Set(..), run)
+import Player exposing (Player(..))
+import Tennis.Game as Game exposing (Game(..), Score(..), Status(..))
+import Tennis.Set as Set exposing (Set(..), Status(..), run)
 import Test exposing (..)
 
 
 suite : Test
 suite =
     describe "The Score module"
-        [ describe "Score.run"
-            [ test
-                "[A, B, A, B, B, A, A]"
-              <|
-                \_ -> Expect.equal (Set ( 0, 0 ) (Advantage A)) (run [ A, B, A, B, B, A, A ])
-            , test
-                "[A, B, A, B, B, A, A, B, B, A, A, B, B, B, B, B, A, A, A, B, A, A, A]"
-              <|
-                let
-                    shots =
-                        [ A, B, A, B, B, A, A, B, B, A, A, B, B, B, B, B, A, A, A, B, A, A, A ]
-                in
-                \_ -> Expect.equal (Set ( 1, 1 ) (Scores Fifteen Zero)) (run shots)
-            ]
+        [ test
+            "0/0 advantage A"
+          <|
+            \_ -> Expect.equal (Set.Playing (Set ( 0, 0 ) (Advantage A))) (run [ A, B, A, B, B, A, A ])
+        , test
+            "TieBreak 6/3"
+          <|
+            \_ -> Expect.equal (Set.Playing (TieBreak ( 6, 3 ))) (run [ A, A, A, A, B, B, B, B, A, A, A, A, B, B, B, B, A, A, A, A, B, B, B, B, A, A, A, A, B, B, B, B, A, A, A, A, B, B, B, B, A, A, A, A, B, B, B, B, B, B, B, A, A, A, A, A, A ])
         ]
