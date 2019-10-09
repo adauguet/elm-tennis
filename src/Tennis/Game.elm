@@ -1,70 +1,70 @@
-module Tennis.Game exposing (Game(..), Score(..), Status(..), initial, update)
+module Tennis.Game exposing (Game(..), Point(..), Score(..), initial, update)
 
 import Player exposing (Player(..))
 
 
-type Status
-    = Playing Game
+type Game
+    = Playing Score
     | Won Player
 
 
-type Game
-    = Scores ( Score, Score )
+type Score
+    = Points ( Point, Point )
     | Advantage Player
 
 
-type Score
+type Point
     = Zero
     | Fifteen
     | Thirty
     | Forty
 
 
-initial : Game
+initial : Score
 initial =
-    Scores ( Zero, Zero )
+    Points ( Zero, Zero )
 
 
-update : Game -> Player -> Status
+update : Score -> Player -> Game
 update game player =
     case ( game, player ) of
-        ( Scores ( Zero, any ), A ) ->
-            Playing (Scores ( Fifteen, any ))
+        ( Points ( Zero, any ), A ) ->
+            Playing (Points ( Fifteen, any ))
 
-        ( Scores ( Fifteen, any ), A ) ->
-            Playing (Scores ( Thirty, any ))
+        ( Points ( Fifteen, any ), A ) ->
+            Playing (Points ( Thirty, any ))
 
-        ( Scores ( Thirty, any ), A ) ->
-            Playing (Scores ( Forty, any ))
+        ( Points ( Thirty, any ), A ) ->
+            Playing (Points ( Forty, any ))
 
-        ( Scores ( any, Zero ), B ) ->
-            Playing (Scores ( any, Fifteen ))
+        ( Points ( any, Zero ), B ) ->
+            Playing (Points ( any, Fifteen ))
 
-        ( Scores ( any, Fifteen ), B ) ->
-            Playing (Scores ( any, Thirty ))
+        ( Points ( any, Fifteen ), B ) ->
+            Playing (Points ( any, Thirty ))
 
-        ( Scores ( any, Thirty ), B ) ->
-            Playing (Scores ( any, Forty ))
+        ( Points ( any, Thirty ), B ) ->
+            Playing (Points ( any, Forty ))
 
         ( Advantage B, A ) ->
-            Playing (Scores ( Forty, Forty ))
+            Playing (Points ( Forty, Forty ))
 
         ( Advantage A, B ) ->
-            Playing (Scores ( Forty, Forty ))
+            Playing (Points ( Forty, Forty ))
 
-        ( Scores ( Forty, Forty ), A ) ->
+        ( Points ( Forty, Forty ), A ) ->
             Playing (Advantage A)
 
-        ( Scores ( Forty, Forty ), B ) ->
+        ( Points ( Forty, Forty ), B ) ->
             Playing (Advantage B)
 
-        ( Scores ( Forty, _ ), A ) ->
+        ( Points ( Forty, _ ), A ) ->
             Won A
 
         ( Advantage A, A ) ->
             Won A
 
-        ( Scores ( _, Forty ), B ) ->
+        ( Points ( _, Forty ), B ) ->
             Won B
 
         ( Advantage B, B ) ->

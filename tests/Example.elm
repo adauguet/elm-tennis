@@ -3,8 +3,8 @@ module Example exposing (suite)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Player exposing (Player(..))
-import Tennis.Game as Game exposing (Game(..), Score(..), Status(..))
-import Tennis.Set as Set exposing (Set(..), Status(..), run)
+import Tennis.Game as Game exposing (Game(..), Score(..))
+import Tennis.Set as Set exposing (Score(..), Set(..), run)
 import Test exposing (..)
 
 
@@ -14,7 +14,7 @@ suite =
         [ test
             "0/0 advantage A"
           <|
-            \_ -> Expect.equal (Set.Playing (Set ( 0, 0 ) (Advantage A))) (run [ A, B, A, B, B, A, A ])
+            \_ -> Expect.equal (Set.Playing (Games ( 0, 0 ) (Advantage A))) (run [ A, B, A, B, B, A, A ])
         , test
             "TieBreak 6/3"
           <|
